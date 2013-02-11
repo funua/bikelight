@@ -11,6 +11,7 @@ app.configure(function() {
 
 app.get('/', function(req, res){          // Обрабатываем запрос корневой страницы "/"
     res.render('index.html');
+    console.log('testtesttesttesttesttesttesttesttest')
 });
 app.get('/portfolio', function(req, res){ // Обрабатываем запрос страницы "/portfolio"
     res.render('portfolio.html');
