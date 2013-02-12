@@ -1,19 +1,19 @@
 var express = require('express');
 var app = express();
 
-var mongoose = require('mongoose');
-mongoose.connect(process.env['MONGOHQ_URL'], 'test');
+// var mongoose = require('mongoose');
+// mongoose.connect(process.env['MONGOHQ_URL'], 'test');
 
-var schema = mongoose.Schema({ name: 'string' });
-var Cat = mongoose.model('Cat', schema);
+// var schema = mongoose.Schema({ name: 'string' });
+// var Cat = mongoose.model('Cat', schema);
 
-var kitty = new Cat({ name: 'Zildjian' });
-kitty.save(function (err) {
-  if (err) {
-  	console.log(err)
-  }
-  console.log('meow');
-});
+// var kitty = new Cat({ name: 'Zildjian' });
+// kitty.save(function (err) {
+//   if (err) {
+//   	console.log(err)
+//   }
+//   console.log('meow');
+// });
 
 app.configure(function() {
     app.engine('html', require('uinexpress').__express) // Используем функцию "template" библиотеки underscore для рендеринга
