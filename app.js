@@ -26,7 +26,7 @@ app.configure(function() {
 
 app.get('/', function(req, res){          // Обрабатываем запрос корневой страницы "/"
     res.render('index.html');
-    console.log('testtesttesttesttesttesttesttesttest')
+    console.log(process.env['MONGOHQ_URL'])
 });
 app.get('/test', function(req, res){ // Обрабатываем запрос страницы "/portfolio"
     res.render('test.html');
