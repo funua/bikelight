@@ -2,7 +2,7 @@ var express = require('express');
 var app = express();
 
 var mongoose = require('mongoose');
-mongoose.connect(process.env['MONGOHQ_URL'], 'test');
+mongoose.connect(process.env['MONGOHQ_URL']);
 
 // var schema = mongoose.Schema({ name: 'string' });
 // var Cat = mongoose.model('Cat', schema);
@@ -25,7 +25,7 @@ app.configure(function() {
 
 app.get('/', function(req, res){          // Обрабатываем запрос корневой страницы "/"
     res.render('index.html');
-    console.log(process.env['MONGOHQ_URL'])
+    // console.log(process.env['MONGOHQ_URL'])
 });
 app.get('/test', function(req, res){ // Обрабатываем запрос страницы "/portfolio"
     res.render('test.html');
