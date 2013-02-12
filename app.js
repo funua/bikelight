@@ -13,8 +13,19 @@ app.get('/', function(req, res){          // Обрабатываем запро
     res.render('index.html');
     console.log('testtesttesttesttesttesttesttesttest')
 });
-app.get('/portfolio', function(req, res){ // Обрабатываем запрос страницы "/portfolio"
-    res.render('portfolio.html');
+app.get('/test', function(req, res){ // Обрабатываем запрос страницы "/portfolio"
+	var mongoose = require('mongoose');
+	mongoose.connect(process.env['MONGOHQ_URL'], 'test');
+
+	var schema = mongoose.Schema({ name: 'string' });
+	var Cat = mongoose.model('Cat', schema);
+
+	var kitty = new Cat({ name: 'Zildjian' });
+	kitty.save(function (err) {
+	  if (err) // ...
+	  console.log('meow');
+	});
+    res.render('test.html');
 });
 
 var port = process.env.PORT || 5000;       
