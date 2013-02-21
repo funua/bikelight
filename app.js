@@ -1,10 +1,32 @@
 var express = require('express');
 var app = express();
 
-// var mongoose = require('mongoose');
-// mongoose.connect(process.env['MONGOHQ_URL']);
+var mongoose = require('mongoose');
+mongoose.connect(process.env['MONGOHQ_URL']);
 
-console.log(process.env['MONGOHQ_URL'])
+var schema = require('./schema.js').init(mongoose);
+var models = require('./model.js').init(mongoose, schema);
+
+models.users.getAll();
+// var Users = mongoose.model('Users', UsersSchema);
+
+// var newUser = new Users({
+// 	name: 'fun',
+// 	email: 'funsersver@gmail.com',
+// 	password: '123'
+// });
+
+// newUser.save(function(err, req){
+// 	console.log(err);
+// 	console.log(req);
+// })
+
+// Users.find({
+// 	name: 'fun'
+// }, function(err, res){
+// 	console.log(err)
+// 	console.log(res[0])
+// })
 
 // var schema = mongoose.Schema({ name: 'string' });
 // var Cat = mongoose.model('Cat', schema);
