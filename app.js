@@ -1,8 +1,10 @@
 var express = require('express');
 var app = express();
 
-var mongoose = require('mongoose');
-mongoose.connect(process.env['MONGOHQ_URL']);
+// var mongoose = require('mongoose');
+// mongoose.connect(process.env['MONGOHQ_URL']);
+
+console.log(process.env['MONGOHQ_URL'])
 
 // var schema = mongoose.Schema({ name: 'string' });
 // var Cat = mongoose.model('Cat', schema);
