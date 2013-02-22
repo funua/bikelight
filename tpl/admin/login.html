@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>BIKELIGHT CUSTOM / ADMIN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        background: url('/img/bg.png');
+      }
+    </style>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+  </head>
+
+  <body>  
+    <div class="container">
+		<div class="row">
+		    <div class="span12">
+			    <form class="well form-horizontal" style="margin: 0 auto;max-width: 450px;" method="post">
+			    	<legend>BIKELIGHT CUSTOM / ADMIN</legend>
+          <%if (error) {%>
+            <div class="alert alert-error">
+              <strong><%=error%></strong>
+            </div>
+          <%}%>
+					<div class="control-group">
+						<label class="control-label" for="inputEmail">Email</label>
+						<div class="controls">
+							<input type="text" id="email" name="email" placeholder="Email">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="inputPassword">Password</label>
+						<div class="controls">
+							<input type="password" id="password" name="password" placeholder="Password">
+						</div>
+					</div>
+					<div class="control-group">
+						<div class="controls">
+              <input type="hidden" name="form_submit" value="1">
+							<button type="submit" class="btn">Вход</button>
+						</div>
+					</div>
+				</form>
+		    </div>
+		</div>
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.js"></script>
+  </body>
+</html>

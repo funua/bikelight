@@ -1,0 +1,28 @@
+body {
+	background: url('../img/bg.png')
+}
+
+.pages_block li {
+	margin: 0 5px 5px 5px; 
+	padding: 5px; 
+	font-size: 1.2em;
+	list-style: none;
+	cursor: move;
+}
+
+#baseSortable li{
+	list-style: none;
+	cursor: move;
+}
+
+.pages_block .btn-group {
+	float: right;
+}
+
+.pages_block .btn{
+	margin-top: -3px;
+}
+
+.ui-sortable {
+	min-height: 15px;
+}

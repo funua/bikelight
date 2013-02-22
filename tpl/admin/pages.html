@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="span12">
+        <h2> Страницы
+			<div class="btn-group">
+			  <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+			   <i class="icon-plus icon-white"></i> Добавить
+			    <span class="caret"></span>
+			  </a>
+			  <ul class="dropdown-menu">
+			  	<li><a href="#newMenuItem" role="button" data-toggle="modal" >Пункт меню</a></li>
+			  	<li><a href="#">Страницу</a></li>
+			  </ul>
+			</div>        	
+        </h2>
+        <ul id="baseSortable">
+			<li class="pages_block well" >
+				<h3>Main <button class="btn btn-small" type="button" ><i class="icon-pencil"></i></button></h3>
+				<ul id="sortable1" class="connectedSortable">
+				  <li class="well">Item 1
+					  <div class="btn-group">						
+						<button class="btn btn-small"><i class="icon-pencil"></i> Редактировать</button>
+					  </div>
+				  </li>
+				</ul>
+			</li>
+		</ul>
+		<div id="newMenuItem" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel">Новый пункт меню</h3>
+		  </div>
+		  <form style="margin: 0px;" method="post" action="<%curr_page%>">		  
+		  <div class="modal-body">
+			  <fieldset>
+			    <label>Имя</label>
+			    <input type="text" name="Name" placeholder="Имя">
+			    <label>ID страницы</label>
+			    <input type="text" name="def_page" placeholder="ID">
+			    <span class="help-block">По умолчанию берется первая страница в меню.</span>
+			    <label class="checkbox">
+			      <input type="checkbox" name="show"> Показывать
+			    </label>
+			    <input type="hidden" name="act" value="addMenuItem"/>
+			  </fieldset>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Отмена</button>
+		    <button class="btn btn-primary">Добавить</button>
+		  </div>
+		  </form>		  
+		</div>
+    </div>
+</div>
+<script>
+	$(function() {
+		$( "[id^=sortable]" ).sortable({
+			connectWith: ".connectedSortable"
+		}).disableSelection().find('li').hover(function(){
+			$(this).find('.btn-group').show();
+		}, function(){
+			$(this).find('.btn-group').hide();
+		});
+		$('#baseSortable').sortable().disableSelection();
+	});
+</script>

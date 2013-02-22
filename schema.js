@@ -2,13 +2,16 @@ exports.init = function(mongoose){
 	var schemes = {
 		Users: new mongoose.Schema({
 			'name': {
-				type: 'String'
+				type: String
 			},
 			'email': {
-				type: 'String'
+				type: String
 			},
 			'password': {
-				type: 'String'
+				type: String
+			},
+			'is_admin': {
+				type: Boolean
 			}
 		}),
 		Pages: new mongoose.Schema({

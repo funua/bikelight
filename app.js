@@ -1,60 +1,52 @@
-var express = require('express');
-var app = express();
+var express = require('express'),
+	http = require('http'),
+	path = require('path'),
+	mongoose = require('mongoose'),
+	errors = require('./errors');
+  
+mongoose.connect('mongodb://heroku:f7c6312f4eb2821e529212f0c8d58735@linus.mongohq.com:10010/app11805677'); // mongoose.connect(process.env['MONGOHQ_URL']);
 
-var mongoose = require('mongoose');
-mongoose.connect(process.env['MONGOHQ_URL']);
+var schema = require('./schema').init(mongoose),
+	models = require('./model').init(mongoose, schema),
+	auth = require('./auth').init(models.users),
+	controller = require('./controller').init(models),
+	app = express();
 
-var schema = require('./schema.js').init(mongoose);
-var models = require('./model.js').init(mongoose, schema);
 
-models.users.getAll();
-// var Users = mongoose.model('Users', UsersSchema);
-
-// var newUser = new Users({
-// 	name: 'fun',
-// 	email: 'funsersver@gmail.com',
-// 	password: '123'
-// });
-
-// newUser.save(function(err, req){
-// 	console.log(err);
-// 	console.log(req);
-// })
-
-// Users.find({
-// 	name: 'fun'
-// }, function(err, res){
-// 	console.log(err)
-// 	console.log(res[0])
-// })
-
-// var schema = mongoose.Schema({ name: 'string' });
-// var Cat = mongoose.model('Cat', schema);
-
-// var kitty = new Cat({ name: 'Zildjian' });
-// kitty.save(function (err) {
-//   if (err) {
-//   	console.log(err)
-//   }
-//   console.log('meow');
-// });
-
-app.configure(function() {
-    app.engine('html', require('uinexpress').__express) // Используем функцию "template" библиотеки underscore для рендеринга
-    app.set('view engine', 'html')
-    app.set('views', __dirname + "/tpl");
-    app.set("view options", {layout: 'layout.html'});   // Файл layout.html по умолчанию будет оборачивать все шаблоны
-    app.use(express.static(__dirname + "/public"));     // Делаем файлы из папки public доступными на сайте
+app.configure(function(){
+	app.engine('html', require('uinexpress').__express) // Используем функцию "template" библиотеки underscore для рендеринга
+	app.set('port', process.env.PORT || 5000);
+	app.set('view engine', 'html')
+	app.set('views', __dirname + "/tpl");
+	app.set("view options", {layout: 'layout.html'});
+	app.use(express.favicon());
+	app.use(express.logger('dev'));
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(express.cookieParser('abez'));
+	app.use(express.session());
+	app.use(app.router);
+	app.use(express.static(__dirname + "/public"));
+	app.use(express.errorHandler()); // ONLY FOR DEVELOPMENT
 });
 
-app.get('/', function(req, res){          // Обрабатываем запрос корневой страницы "/"
-    res.render('index.html');
-    // console.log(process.env['MONGOHQ_URL'])
-});
-app.get('/test', function(req, res){ // Обрабатываем запрос страницы "/portfolio"
-    res.render('test.html');
+// admin routes
+app.all('/admin*', function(req, res, next) {
+	if (req.session.user_id && req.session.is_admin) {
+		next()
+	} else {
+		auth.tryAuth(req, next, function(err){
+			res.render('admin/login.html', {
+				error: errors.get(err),
+				layout: false
+			});
+		})
+	}
 });
 
-var port = process.env.PORT || 5000;       
-app.listen(port)                           // Запускаем сервер на 5000 порту, если не указана переменная окружения "port" 
-console.log("Listening at " + port)        // Пишем в консоль, что запустились
+app.get('/', controller);
+app.use('/admin', controller);
+
+var port = process.env.PORT || 5000;
+app.listen(port);
+console.log("Listening at " + port);
