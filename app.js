@@ -4,7 +4,7 @@ var express = require('express'),
 	mongoose = require('mongoose'),
 	errors = require('./errors');
   
-mongoose.connect('mongodb://heroku:f7c6312f4eb2821e529212f0c8d58735@linus.mongohq.com:10010/app11805677'); // mongoose.connect(process.env['MONGOHQ_URL']);
+mongoose.connect(process.env['MONGOHQ_URL']);
 
 var schema = require('./schema').init(mongoose),
 	models = require('./model').init(mongoose, schema),
