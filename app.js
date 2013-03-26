@@ -12,7 +12,6 @@ var schema = require('./schema').init(mongoose),
 	controller = require('./controller').init(models),
 	app = express();
 
-
 app.configure(function(){
 	app.engine('html', require('uinexpress').__express) // Используем функцию "template" библиотеки underscore для рендеринга
 	app.set('port', process.env.PORT || 5000);
