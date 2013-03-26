@@ -1,4 +1,4 @@
-_err = {
+var _err = {
 	auth: {
 		'wrong_pass_or_email': 'Не верный пароль или email',
 		'empty_fields': 'Все поля обязательны к заполнению'
