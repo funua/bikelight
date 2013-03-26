@@ -1,58 +1,26 @@
 exports.init = function(mongoose){
 	var schemes = {
 		Users: new mongoose.Schema({
-			'name': {
-				type: String
-			},
-			'email': {
-				type: String
-			},
-			'password': {
-				type: String
-			},
-			'is_admin': {
-				type: Boolean
-			}
+			'name':  String,
+			'email': String,
+			'password': String,
+			'is_admin': Boolean
 		}),
 		Pages: new mongoose.Schema({
-			'name': {
-				type: String
-			},
-			'title': {
-				type: String
-			},
-			'descr': {
-				type: String
-			},
-			'path': {
-				type: String
-			},
-			'pos': {
-				type: Number
-			},
-			'vars': {
-				type: []
-			},
-			'show': {
-				type: Boolean
-			}
+			'name': String,
+			'title': String,
+			'descr': String,
+			'path': String,
+			'pos': Number,
+			'vars': [],
+			'show': Boolean
 		}),
-		Menu: new mongoose.Schema({
-			'name': {
-				type: String
-			},
-			'pages': {
-				type: [mongoose.Schema.Types.ObjectId]
-			},
-			'default_page': {
-				type: mongoose.Schema.Types.ObjectId
-			},
-			'pos': {
-				type: Number
-			},
-			'show': {
-				type: Boolean
-			}
+		Menus: new mongoose.Schema({
+			'name': String,
+			'pages': [{type: mongoose.Schema.Types.ObjectId, ref: 'Pages'}],
+			'default_page': {type: mongoose.Schema.Types.ObjectId, ref: 'Pages'},
+			'pos': Number,
+			'show': Boolean
 		})
 	}
 	return schemes;

@@ -16,6 +16,7 @@ body {
 }
 
 .pages_block .btn-group {
+	display: none;
 	float: right;
 }
 
@@ -25,4 +26,8 @@ body {
 
 .ui-sortable {
 	min-height: 15px;
+}
+
+.error.help-inline {
+	color: #b94a48;
 }

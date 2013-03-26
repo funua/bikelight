@@ -29,7 +29,7 @@ app.configure(function(){
 	app.use(express.static(__dirname + "/public"));
 	app.use(express.errorHandler()); // ONLY FOR DEVELOPMENT
 });
-
+app.get('/', controller);
 // admin routes
 app.all('/admin*', function(req, res, next) {
 	if (req.session.user_id && req.session.is_admin) {
@@ -43,8 +43,14 @@ app.all('/admin*', function(req, res, next) {
 		})
 	}
 });
-
-app.get('/', controller);
+app.get('/admin/edit_page/:id', controller);
+app.post('/admin/edit_page/:id', controller);
+app.get('/admin/remove_menu/:id', controller);
+app.post('/admin/update_menu', function(req, res, next){
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With"); 
+	controller(req, res, next);
+});
 app.use('/admin', controller);
 
 var port = process.env.PORT || 5000;

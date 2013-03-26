@@ -8,35 +8,70 @@
 			  </a>
 			  <ul class="dropdown-menu">
 			  	<li><a href="#newMenuItem" role="button" data-toggle="modal" >Пункт меню</a></li>
-			  	<li><a href="#">Страницу</a></li>
+			  	<li><a href="/admin/newPage">Страницу</a></li>
 			  </ul>
-			</div>        	
+			</div>
+			<a style="float: right; margin-top: 10px;" href="#" onclick="submitPosition(); return false;" class="btn btn-info">Сохранить</a>
         </h2>
-        <ul id="baseSortable">
-			<li class="pages_block well" >
-				<h3>Main <button class="btn btn-small" type="button" ><i class="icon-pencil"></i></button></h3>
-				<ul id="sortable1" class="connectedSortable">
-				  <li class="well">Item 1
-					  <div class="btn-group">						
-						<button class="btn btn-small"><i class="icon-pencil"></i> Редактировать</button>
-					  </div>
-				  </li>
-				</ul>
-			</li>
-		</ul>
+        <% if (menu) { %>
+	        <ul id="baseSortable">
+        	<% for (key in menu) { 
+        		item = menu[key]%> 
+					<li class="pages_block well" menu_id="<%=item._id%>" >
+						<h3><%=item.name%> <a href="#menu<%=item._id%>" style="display: none;" role="button" data-toggle="modal" class="btn btn-small" type="button" ><i class="icon-pencil"></i></a>&nbsp;<%=(item.show?'':'<i style="margin-top: 8px;" class="icon-eye-close"></i>')%>
+						</h3>
+						<ul id="sortable<%=key%>" class="connectedSortable">
+							<%for (i=0; i<item.pages.length; i++) { %>
+							  <li class="well" page_id="<%=item.pages[i]._id%>"><%=item.pages[i].name%>&nbsp;<%=(item.pages[i].show?'':'<i class="icon-eye-close"></i>')%>
+								  <div class="btn-group">
+									<a href="/admin/edit_page/<%=item.pages[i]._id%>" class="btn btn-small"><i class="icon-pencil"></i> Редактировать</a>
+								  </div>
+							  </li>
+							<%}%>
+						</ul>						
+					</li>
+				<div id="menu<%=item._id%>" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-header">
+				    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				    <h3 id="myModalLabel">Редактирование</h3>
+				  </div>
+				  <form id="menuItem" style="margin: 0px;" method="post" action="<%curr_page%>">		  
+				  <div class="modal-body">
+					  <fieldset>
+					    <label>Имя</label>
+					    <div class="controls">
+					    	<input type="text" name="item_name" value="<%=item.name%>" placeholder="Имя">
+					    </div>
+					    <label class="checkbox">
+					      <input type="checkbox" name="show" <%=(item.show?'checked="checked"':'')%> > Показывать
+					    </label>
+					    <input type="hidden" name="act" value="editMenu"/>
+					    <input type="hidden" name="id" value="<%=item._id%>"/>
+					  </fieldset>
+				  </div>
+				  <div class="modal-footer">
+				  	<a href="/admin/remove_menu/<%=item._id%>" onclick="return confirm('Подтвердите удаление!');" class="btn btn-danger" style="float: left;" >Удалить</a>
+				    <button class="btn" data-dismiss="modal" aria-hidden="true">Отмена</button>
+				    <button class="btn btn-primary">Сохранить</button>
+				  </div>
+				  </form>		  
+				</div>				
+			<%}%>
+			</ul>
+        <%}%>
 		<div id="newMenuItem" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-header">
 		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		    <h3 id="myModalLabel">Новый пункт меню</h3>
 		  </div>
-		  <form style="margin: 0px;" method="post" action="<%curr_page%>">		  
+		  <form id="menuItem" style="margin: 0px;" method="post" action="<%curr_page%>">		  
 		  <div class="modal-body">
 			  <fieldset>
+
 			    <label>Имя</label>
-			    <input type="text" name="Name" placeholder="Имя">
-			    <label>ID страницы</label>
-			    <input type="text" name="def_page" placeholder="ID">
-			    <span class="help-block">По умолчанию берется первая страница в меню.</span>
+			    <div class="controls">
+			    	<input type="text" name="item_name" placeholder="Имя">
+			    </div>
 			    <label class="checkbox">
 			      <input type="checkbox" name="show"> Показывать
 			    </label>
@@ -53,13 +88,48 @@
 </div>
 <script>
 	$(function() {
+
 		$( "[id^=sortable]" ).sortable({
 			connectWith: ".connectedSortable"
-		}).disableSelection().find('li').hover(function(){
-			$(this).find('.btn-group').show();
+		}).disableSelection();
+		$('#baseSortable').find('li').hover(function(){
+			$(this).find('.btn-group, .btn').show();
 		}, function(){
-			$(this).find('.btn-group').hide();
+			$(this).find('.btn-group, .btn').hide();
 		});
 		$('#baseSortable').sortable().disableSelection();
+
+		$('form#menuItem').validate({
+			rules: {
+				item_name: "required",
+			},
+			messages: {
+				item_name: {
+					required: "Введите название меню",
+				}			
+			}			
+		})
+
 	});
+
+	function submitPosition(){
+		var menu_ids = {};
+		var i = 0;
+		$('#baseSortable li[menu_id]').each(function(){
+			var mid = $(this).attr('menu_id');
+			menu_ids[mid] = {
+				pos: i,
+				pages: [],
+				id: mid
+			};
+			$(this).find('li[page_id]').each(function(){
+				menu_ids[mid].pages.push($(this).attr('page_id'));
+			});
+			i++;
+		});
+
+		$.post('/admin/update_menu', menu_ids, function(){
+			window.location.reload();
+		})
+	}
 </script>

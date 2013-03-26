@@ -1,0 +1,49 @@
+<div class="row">
+    <div class="span12">
+    	<h2> Новая страница</h2>
+    	<div class="well">
+    		<form id="newPage" method="post">
+				<fieldset>
+					<label>Имя страницы</label>
+					<input type="text" name="page_name" placeholder="">
+					<label>Имя файла</label>
+					<input type="text" name="file_name" placeholder="">					
+					<% if (menu) { %>
+						<label>Пункт меню</label>
+						<select name="menu_id">
+							<% for (key in menu) { %>
+							  <option value="<%=menu[key]._id%>"><%=menu[key].name%></option>
+							<% } %>
+						</select>
+					<% } %>
+					<label>Title</label>
+					<input type="text" class="span10" name="title" placeholder="">
+					<label>Description</label>
+					<textarea type="text" class="span10" name="descr" placeholder=""></textarea>
+					<label class="checkbox">
+						<input type="checkbox" name="show"> Показывать
+					</label>
+					<button type="submit" class="btn">Добавить</button>
+				</fieldset>
+			</form>
+    	</div>
+    </div>
+</div>
+<script>
+	$(function() {
+		$('form#newPage').validate({
+			rules: {
+				page_name: "required",
+				file_name: "required"
+			},
+			messages: {
+				page_name: {
+					required: "Введите название страницы",
+				},
+				file_name: {
+					required: "Введите путь к файлу",
+				}
+			}			
+		})
+	});
+</script>

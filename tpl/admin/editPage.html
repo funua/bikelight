@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="span12">
+    	<h2> Редактирование страницы</h2>
+    	<div class="well">
+    		<form id="formPage" method="post">
+				<fieldset>
+					<label>Имя</label>
+					<input type="text" value="<%=page.name%>" name="page_name" placeholder="">
+					<label>Файл</label>
+					<input type="text" value="<%=page.path%>" name="file_name" placeholder="">					
+					<label>Title</label>
+					<input type="text" value="<%=(page.title?page.title:'')%>" class="span10" name="title" placeholder="">
+					<label>Descr</label>
+					<textarea type="text" class="span10" name="descr" placeholder=""><%=(page.descr?page.descr:'')%></textarea>
+					<label class="checkbox">
+						<input type="checkbox" <%=(page.show?'checked="checked"':'')%> name="show"> Показывать
+					</label>
+					<button type="submit" class="btn">Сохранить</button>
+				</fieldset>
+			</form>
+    	</div>
+    </div>
+</div>
+<script>
+	$(function() {
+		$('form#formPage').validate({
+			rules: {
+				page_name: "required",
+				file_name: "required"
+			},
+			messages: {
+				page_name: {
+					required: "Введите название страницы",
+				},
+				file_name: {
+					required: "Введите путь к файлу",
+				}
+			}			
+		})
+	});
+</script>

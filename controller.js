@@ -18,6 +18,9 @@ exports.init = function(models) {
 		render: function(path, opts){
 			opts['curr_page'] = this.req.originalUrl;
 			this.res.render(path, opts);
+		},
+		redirect: function(url){
+			this.res.redirect(url);
 		}
 	}
 
@@ -33,15 +36,121 @@ exports.init = function(models) {
 	}
 
 	var adminController = {
+		err: [],
 		path: 'admin/',
 		layout: 'admin_layout.html',
 		indexAction: function() {
 			this.render('index');
 		},
-		pagesAction: function() {
-			console.log(base.post);
-			this.render('pages');
+////////// BEGIN PAGE ACTIONS ////////////		
+		pagesAction: function(view) {
+			if (base.post && base.post.act && !view) {
+				this[base.post.act]();
+			} else {				
+				var menu = models.menus.getAllPopulate(function(data){
+					adminController.render('pages', {
+						menu: data
+					});
+				})
+			}
 		},
+		newPageAction: function() {
+			if (base.post && base.post.page_name && base.post.file_name) {
+				var newPage = {
+					'name': base.post.page_name,
+					'title': base.post.title,
+					'descr': base.post.descr,
+					'path': base.post.file_name,
+					'show': (base.post.show?true:false)
+				}
+				var menu_id = base.post.menu_id;
+				models.pages.add(newPage, function(page_id){
+					models.menus.addPageInMenu(menu_id, page_id, function(){
+						adminController.pagesAction(true);
+					});
+				});
+			} else {
+				var menu = models.menus.getAll(function(data){
+					adminController.render('newPage', {
+						menu: data
+					});
+				})
+			}			
+		},
+		edit_pageAction: function() {
+			if (base.post && base.post.page_name && base.post.file_name && base.req.params.id) {
+				var data = {
+					'name': base.post.page_name,
+					'title': base.post.title,
+					'descr': base.post.descr,
+					'path': base.post.file_name,
+					'show': (base.post.show?true:false)
+				}
+				page_id = base.req.params.id;
+				if (page_id) {
+					models.pages.editPage(page_id, data, function(){
+						base.redirect('/admin/pages');		
+					})
+				}
+			} else {
+				if (base.req.params.id) {
+					models.pages.pageById(base.req.params.id, function(page){
+						adminController.render('editPage', {
+							page: page
+						});
+					});
+				} else {
+					base.redirect('/admin/pages');
+				}
+			}
+		},
+////////// END MENU ACTIONS ////////////		
+
+////////// BEGIN MENU ACTIONS ////////////
+		addMenuItem: function(callback) {
+			if (base.post.item_name) {
+				newMenu = {
+					name: base.post.item_name,
+					show: (base.post.show?true:false)
+				}
+				models.menus.add(newMenu, function(){
+					adminController.pagesAction(true);
+				});
+			} else {
+				base.redirect('/admin/pages');
+			}
+		},
+		editMenu: function(callback) {
+			if (base.post.item_name && base.post.id) {
+				menuItem = {
+					name: base.post.item_name,
+					show: (base.post.show?true:false)
+				}
+				models.menus.edit(base.post.id, menuItem, function(){
+					adminController.pagesAction(true);
+				});
+			} else {
+				this.pagesAction(true);	
+			}
+		},
+		remove_menuAction: function() {
+			if (base.req.params.id) {
+				models.menus.remove(base.req.params.id, function(){
+					base.redirect('/admin/pages');
+				});
+			} else {
+				base.redirect('/admin/pages');
+			}
+		},
+		update_menuAction: function(){
+			if (base.post) {
+				models.menus.massUpDate(base.post, function(){
+					adminController.pagesAction(true);
+				})
+			}
+			adminController.pagesAction(true);
+		},
+////////// END MENU ACTIONS ////////////
 		productsAction: function() {
 			this.render('index');
 		},
@@ -49,7 +158,8 @@ exports.init = function(models) {
 			this.render('index');
 		},
 		render: function(name, opts) {
-			if (!opts) opts = {}
+			if (!opts) opts = {};
+			if (this.err) opts['err'] = this.err;
 			opts['layout'] = this.layout;
 			base.render(this.path+name+'.html', opts)
 		}
