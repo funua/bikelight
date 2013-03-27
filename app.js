@@ -43,14 +43,11 @@ app.all('/admin*', function(req, res, next) {
 		})
 	}
 });
+
 app.get('/admin/edit_page/:id', controller);
 app.post('/admin/edit_page/:id', controller);
 app.get('/admin/remove_menu/:id', controller);
-app.post('/admin/update_menu', function(req, res, next){
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "X-Requested-With"); 
-	controller(req, res, next);
-});
+app.post('/admin/update_menu', controller);
 app.use('/admin', controller);
 
 var port = process.env.PORT || 5000;

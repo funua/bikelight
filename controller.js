@@ -10,17 +10,41 @@ exports.init = function(models) {
 			this.doController();
 		},
 		doController: function(){
-			path = this.url.pathname.split('/');
+			var path = this.url.pathname.split('/');
 			var controller = (path.length == 1 || !path[1]?'index':path[1]);
 			var action = (path.length == 2?'index':path[2]);
 			eval(controller+'Controller.'+action+'Action()');
 		},
 		render: function(path, opts){
 			opts['curr_page'] = this.req.originalUrl;
-			this.res.render(path, opts);
-		},
+			this.addVars(opts, function(){
+				base.res.render(path, this);
+			});
+		},		
 		redirect: function(url){
 			this.res.redirect(url);
+		},
+		addVars: function(opts, callback){
+			var arr = [];
+			for (var name in this) (name.indexOf('_') == 0?arr.push(name):'');
+			base.run(arr, function(func_name){
+				opts[func_name] = this;
+			}, function(){
+				callback.call(opts);
+			})
+		},
+		run: function(arr, callback, end){
+			if (!arr || !arr.length) end();
+			else {
+				var func = arr.shift();
+				base[func](function(data){
+					callback.call(data, func);
+					base.run(arr, callback, end);
+				});				
+			}
+		},
+		_headMenu: function(callback){
+			models.menus.getAllPopulate(callback);
 		}
 	}
 
@@ -104,7 +128,7 @@ exports.init = function(models) {
 				}
 			}
 		},
-////////// END MENU ACTIONS ////////////		
+////////// END PAGE ACTIONS ////////////		
 
 ////////// BEGIN MENU ACTIONS ////////////
 		addMenuItem: function(callback) {
@@ -151,6 +175,7 @@ exports.init = function(models) {
 			adminController.pagesAction(true);
 		},
 ////////// END MENU ACTIONS ////////////
+
 		productsAction: function() {
 			this.render('index');
 		},
