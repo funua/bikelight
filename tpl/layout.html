@@ -40,7 +40,7 @@
                 _.each(_headMenu, function(v) { %>
                     <% if(v.pages && v.pages.length > 0) { %>
                       <li class="dropdown" >
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%=v.title%> <b class="caret"></b></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%=v.name%> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                           <% _.each(v.pages, function(page) { %>
                             <li><a href="#"><%=page.title%></a></li>
