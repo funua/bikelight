@@ -37,7 +37,12 @@ exports.init = function(mongoose, schema){
 				this.model.update({_id:id}, {$set:data}).exec(function(err, req){
 					callback();
 				});
-			}
+			},
+			remove: function(id, callback){
+				this.model.remove({ _id: id }).exec(function(err, req){
+					callback();
+				});
+			},
 		},
 		menus: {
 			model: mongoose.model('Menus', schema.Menus),
@@ -57,13 +62,24 @@ exports.init = function(mongoose, schema){
 					callback();
 				});
 			},
+			getNameById: function(id, callback) {
+				this.model.findOne({_id: id}, 'name').exec(function(err, req){
+					callback(req.name);
+				})
+			},
 			getAll: function(callback) {
 				this.model.find({}).sort({pos: 'asc'}).exec(function(err, req){
 					callback(req);
 				})
 			},
-			getAllPopulate: function(callback) {
-				this.model.find({}).sort({pos: 'asc'}).populate('pages').exec(function(err, req){
+			getAllPopulate: function(callback, onlyVisible) {
+				var find = {}
+				var pop_q = {}
+				if (onlyVisible) {
+					find.show = true;
+					pop_q.show = true
+				}
+				this.model.find(find).sort({pos: 'asc'}).populate('pages', null, pop_q).exec(function(err, req){
 					callback(req);
 				})
 			},

@@ -10,7 +10,6 @@ exports.init = function(mongoose){
 			'name': String,
 			'title': String,
 			'descr': String,
-			'path': String,
 			'pos': Number,
 			'vars': [],
 			'show': Boolean

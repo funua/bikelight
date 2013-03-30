@@ -1,7 +1,14 @@
+var fs = require('fs');
+
+// fs.mkdir(app.get('views')+'/pages/test', 0755, function(e){
+// 	console.log(e);
+// });
+
 exports.init = function(models) {
 	var models = models;
 	var base = {
 		init: function(req, res, next){
+			console.log(req.app.get('views'));
 			this.req = req;
 			this.res = res;
 			this.next = next;
@@ -27,24 +34,63 @@ exports.init = function(models) {
 		addVars: function(opts, callback){
 			var arr = [];
 			for (var name in this) (name.indexOf('_') == 0?arr.push(name):'');
-			base.run(arr, function(func_name){
+			base.doQuery(arr, function(func_name){
 				opts[func_name] = this;
 			}, function(){
 				callback.call(opts);
 			})
 		},
-		run: function(arr, callback, end){
+		doQuery: function(arr, callback, end){
 			if (!arr || !arr.length) end();
 			else {
 				var func = arr.shift();
 				base[func](function(data){
 					callback.call(data, func);
-					base.run(arr, callback, end);
+					base.doQuery(arr, callback, end);
 				});				
 			}
 		},
+		makeDir: function(name, callback){
+			var path = this.req.app.get('views')+'/pages/'+name;
+			fs.mkdir(path, 0755,function(err){
+				if (err) throw err;
+
+				console.log('successfully  creat dir '+path)
+				if (callback) callback(err);
+			})
+		},
+		removeDir: function(name, callback) {
+			var path = this.req.app.get('views')+'/pages/'+name;
+			fs.rmdir(path, function (err) {
+			  if (err) throw err;
+			  console.log('successfully deleted ' + path);
+			  if (callback) callback(err);
+			});
+		},
+		removeFile: function(id, callback){
+			var path = this.req.app.get('views')+'/pages/'+id+'.html';
+			fs.unlink(path, function (err) {
+			    if (err){
+			        throw err;
+			    } else {
+			    console.log('successfully deleted file');
+			    }
+			    if (callback) callback();
+			});
+		},
+		creatFile: function(id, callback) {
+			var path = this.req.app.get('views')+'/pages/'+id+'.html';
+		    fs.writeFile(path, 'automatic creat page', function (err) {
+		        if (err){
+		            throw err;
+		        } else {
+		        console.log('successfully created file');
+		        }
+		        if (callback) callback();
+		    });			
+		},
 		_headMenu: function(callback){
-			models.menus.getAllPopulate(callback);
+			models.menus.getAllPopulate(callback, true);
 		}
 	}
 
@@ -79,19 +125,21 @@ exports.init = function(models) {
 			}
 		},
 		newPageAction: function() {
-			if (base.post && base.post.page_name && base.post.file_name) {
+			if (base.post && base.post.page_name) {
 				var newPage = {
 					'name': base.post.page_name,
 					'title': base.post.title,
 					'descr': base.post.descr,
-					'path': base.post.file_name,
 					'show': (base.post.show?true:false)
 				}
 				var menu_id = base.post.menu_id;
 				models.pages.add(newPage, function(page_id){
-					models.menus.addPageInMenu(menu_id, page_id, function(){
-						adminController.pagesAction(true);
-					});
+					base.creatFile(page_id, function(){
+						models.menus.addPageInMenu(menu_id, page_id, function(){
+							adminController.pagesAction(true);
+						});						
+					})
+
 				});
 			} else {
 				var menu = models.menus.getAll(function(data){
@@ -102,12 +150,11 @@ exports.init = function(models) {
 			}			
 		},
 		edit_pageAction: function() {
-			if (base.post && base.post.page_name && base.post.file_name && base.req.params.id) {
+			if (base.post && base.post.page_name && base.req.params.id) {
 				var data = {
 					'name': base.post.page_name,
 					'title': base.post.title,
 					'descr': base.post.descr,
-					'path': base.post.file_name,
 					'show': (base.post.show?true:false)
 				}
 				page_id = base.req.params.id;
@@ -128,6 +175,22 @@ exports.init = function(models) {
 				}
 			}
 		},
+		remove_pageAction: function() {
+			if (base.req.params.id) {
+				this.removePage(base.req.params.id, function(){
+					base.redirect('/admin/pages');
+				});
+			} else {
+				base.redirect('/admin/pages');
+			}
+		},
+		removePage: function(id, callback){
+			base.removeFile(base.req.params.id, function(){
+				models.pages.remove(base.req.params.id, function(){
+					if(callback) callback();
+				});
+			});
+		},
 ////////// END PAGE ACTIONS ////////////		
 
 ////////// BEGIN MENU ACTIONS ////////////
@@ -137,9 +200,9 @@ exports.init = function(models) {
 					name: base.post.item_name,
 					show: (base.post.show?true:false)
 				}
-				models.menus.add(newMenu, function(){
+				models.menus.add(newMenu, function(id){
 					adminController.pagesAction(true);
-				});
+				});				
 			} else {
 				base.redirect('/admin/pages');
 			}

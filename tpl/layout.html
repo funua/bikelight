@@ -37,21 +37,19 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <% 
-                _.each(_headMenu, function(v) { 
-                  if (v.show) { %>
-                    <% if(v.pages.length > 0) { %>
+                _.each(_headMenu, function(v) { %>
+                    <% if(v.pages && v.pages.length > 0) { %>
                       <li class="dropdown" >
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%=v.name%> <b class="caret"></b></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%=v.title%> <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                           <% _.each(v.pages, function(page) { %>
-                            <li><a href="#"><%=page.name%></a></li>
+                            <li><a href="#"><%=page.title%></a></li>
                           <% });%>
                         </ul>
                       <li >
                     <% } else {%>
                      <li ><a href="#"><%=v.name%></a><li >
-                    <% } %>
-                  <% } %>                  
+                    <% } %>             
                 <%});%>
             </ul>
           </div><!--/.nav-collapse -->

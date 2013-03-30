@@ -5,9 +5,7 @@
     		<form id="newPage" method="post">
 				<fieldset>
 					<label>Имя страницы</label>
-					<input type="text" name="page_name" placeholder="">
-					<label>Имя файла</label>
-					<input type="text" name="file_name" placeholder="">					
+					<input type="text" name="page_name" placeholder="">			
 					<% if (menu) { %>
 						<label>Пункт меню</label>
 						<select name="menu_id">
@@ -33,15 +31,11 @@
 	$(function() {
 		$('form#newPage').validate({
 			rules: {
-				page_name: "required",
-				file_name: "required"
+				page_name: "required"
 			},
 			messages: {
 				page_name: {
 					required: "Введите название страницы",
-				},
-				file_name: {
-					required: "Введите путь к файлу",
 				}
 			}			
 		})

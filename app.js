@@ -3,6 +3,7 @@ var express = require('express'),
 	path = require('path'),
 	mongoose = require('mongoose'),
 	errors = require('./errors');
+	
 
 	mongoose.connect(process.env['MONGOHQ_URL']);
 
@@ -47,6 +48,7 @@ app.all('/admin*', function(req, res, next) {
 app.get('/admin/edit_page/:id', controller);
 app.post('/admin/edit_page/:id', controller);
 app.get('/admin/remove_menu/:id', controller);
+app.get('/admin/remove_page/:id', controller);
 app.post('/admin/update_menu', controller);
 app.use('/admin', controller);
 

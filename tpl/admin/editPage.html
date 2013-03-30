@@ -5,9 +5,7 @@
     		<form id="formPage" method="post">
 				<fieldset>
 					<label>Имя</label>
-					<input type="text" value="<%=page.name%>" name="page_name" placeholder="">
-					<label>Файл</label>
-					<input type="text" value="<%=page.path%>" name="file_name" placeholder="">					
+					<input type="text" value="<%=page.name%>" name="page_name" placeholder="">				
 					<label>Title</label>
 					<input type="text" value="<%=(page.title?page.title:'')%>" class="span10" name="title" placeholder="">
 					<label>Descr</label>
@@ -16,6 +14,7 @@
 						<input type="checkbox" <%=(page.show?'checked="checked"':'')%> name="show"> Показывать
 					</label>
 					<button type="submit" class="btn">Сохранить</button>
+					<a href="/admin/remove_page/<%=page._id%>" style="float: right" type="submit" onclick="return confirm('Подтвердите удаление.');" class="btn btn-danger">Удалить</a>
 				</fieldset>
 			</form>
     	</div>
@@ -25,15 +24,11 @@
 	$(function() {
 		$('form#formPage').validate({
 			rules: {
-				page_name: "required",
-				file_name: "required"
+				page_name: "required"
 			},
 			messages: {
 				page_name: {
 					required: "Введите название страницы",
-				},
-				file_name: {
-					required: "Введите путь к файлу",
 				}
 			}			
 		})
