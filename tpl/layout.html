@@ -17,10 +17,11 @@
       }
     </style>
     <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <!-- <link rel="shortcut icon" href="../assets/ico/favicon.png"> -->
     <script src="/js/jquery.js"></script>
     <script src="/js/jquery-ui.js"></script>
-    <script src="/js/bootstrap.js"></script>    
+    <script src="/js/bootstrap.js"></script>
   </head>
 
   <body>
@@ -33,22 +34,22 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Bikelight</a>
+          <a class="brand" href="/"><img src="/img/logo.png"/></a>
           <div class="nav-collapse collapse">
-            <ul class="nav">
+            <ul class="nav head-menu">
               <% 
                 _.each(_headMenu, function(v) { %>
-                    <% if(v.pages && v.pages.length > 0) { %>
+                    <% if(v.pages && v.pages.length > 1) { %>
                       <li class="dropdown" >
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#"><%=v.name%> <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                          <% _.each(v.pages, function(page) { %>
-                            <li><a href="#"><%=page.title%></a></li>
-                          <% });%>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="/<%=v.eng_name%>/<%=v.pages[0].eng_name%>"><%=v.name%> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">                          
+                            <% _.each(v.pages, function(page) { %>
+                              <li><a href="/<%=v.eng_name%>/<%=page.eng_name%>"><%=page.name%></a></li>
+                            <% });%>                          
                         </ul>
                       <li >
-                    <% } else {%>
-                     <li ><a href="#"><%=v.name%></a><li >
+                    <% } else if (v.pages && v.pages.length == 1) {%>
+                     <li ><a href="/<%=v.eng_name%>/<%=v.pages[0].eng_name%>"><%=v.name%></a><li >
                     <% } %>             
                 <%});%>
             </ul>

@@ -5,7 +5,9 @@
     		<form id="newPage" method="post">
 				<fieldset>
 					<label>Имя страницы</label>
-					<input type="text" name="page_name" placeholder="">			
+					<input type="text" name="page_name" placeholder="">
+					<label>Имя страницы на анг. для Url</label>
+					<input type="text" name="url_name" placeholder="">
 					<% if (menu) { %>
 						<label>Пункт меню</label>
 						<select name="menu_id">
@@ -18,6 +20,8 @@
 					<input type="text" class="span10" name="title" placeholder="">
 					<label>Description</label>
 					<textarea type="text" class="span10" name="descr" placeholder=""></textarea>
+					<label>Body</label>
+					<textarea type="text" class="span10" id="code" name="body" placeholder=""></textarea>
 					<label class="checkbox">
 						<input type="checkbox" name="show"> Показывать
 					</label>
@@ -40,4 +44,15 @@
 			}			
 		})
 	});
+
+      // Define an extended mixed-mode that understands vbscript and
+      // leaves mustache/handlebars embedded templates in html mode
+      var mixedMode = {
+        name: "htmlmixed",
+        scriptTypes: [{matches: /\/x-handlebars-template|\/x-mustache/i,
+                       mode: null},
+                      {matches: /(text|application)\/(x-)?vb(a|script)/i,
+                       mode: "vbscript"}]
+      };
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {mode: mixedMode, tabMode: "indent"});	
 </script>

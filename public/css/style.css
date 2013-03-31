@@ -1,0 +1,31 @@
+body {
+	/*background: url(../img/bg.png);*/
+	background: black;
+}
+
+.head-menu {
+	margin-top: 12px !important;
+}
+
+.navbar-inverse .navbar-inner {
+	background: black;
+	border: 0px;
+}
+
+
+.main_slider:after {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+	content: '';
+	background: red;
+}
+
+.title {
+	color: #faee0e;
+}
+
+.container {
+	color: #DCDCDC;
+}

@@ -72,6 +72,11 @@ exports.init = function(mongoose, schema){
 					callback(req);
 				})
 			},
+			getPage: function(menu_name, page_name, callback){
+				this.model.find({eng_name: menu_name}).populate('pages', null, {eng_name: page_name}).exec(function(err, req){
+					callback(req);
+				})				
+			},
 			getAllPopulate: function(callback, onlyVisible) {
 				var find = {}
 				var pop_q = {}

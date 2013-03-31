@@ -30,7 +30,6 @@ app.configure(function(){
 	app.use(express.errorHandler()); // ONLY FOR DEVELOPMENT	
 });
 
-app.get('/', controller);
 // admin routes
 app.all('/admin*', function(req, res, next) {
 	if (req.session.user_id && req.session.is_admin) {
@@ -51,6 +50,7 @@ app.get('/admin/remove_menu/:id', controller);
 app.get('/admin/remove_page/:id', controller);
 app.post('/admin/update_menu', controller);
 app.use('/admin', controller);
+app.get('*', controller);
 
 var port = process.env.PORT || 5000;
 app.listen(port);

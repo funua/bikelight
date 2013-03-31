@@ -1,4 +1,5 @@
-var fs = require('fs');
+var fs = require('fs'),
+	helper = require('./helper');
 
 // fs.mkdir(app.get('views')+'/pages/test', 0755, function(e){
 // 	console.log(e);
@@ -8,7 +9,6 @@ exports.init = function(models) {
 	var models = models;
 	var base = {
 		init: function(req, res, next){
-			console.log(req.app.get('views'));
 			this.req = req;
 			this.res = res;
 			this.next = next;
@@ -20,7 +20,28 @@ exports.init = function(models) {
 			var path = this.url.pathname.split('/');
 			var controller = (path.length == 1 || !path[1]?'index':path[1]);
 			var action = (path.length == 2?'index':path[2]);
-			eval(controller+'Controller.'+action+'Action()');
+			try {
+				eval(controller+'Controller.'+action+'Action()');
+			}
+			catch(e) {
+				if (controller == 'js' || controller == 'img' || controller == 'css') {
+					this.next();
+				} else {
+					this.tryLoadPage(controller, action, function(){
+						base.render('404.html',{});
+					})
+				}
+			}
+				
+		},
+		tryLoadPage: function(menu, page, callback){
+			models.menus.getPage(menu, page, function(res){
+				if (res.length > 0 && res[0].pages.length > 0) {
+					base.render('main_page.html',{
+						page_body: res[0].pages[0].body
+					});
+				} else callback();
+			})			
 		},
 		render: function(path, opts){
 			opts['curr_page'] = this.req.originalUrl;
@@ -80,7 +101,7 @@ exports.init = function(models) {
 		},
 		creatFile: function(id, callback) {
 			var path = this.req.app.get('views')+'/pages/'+id+'.html';
-		    fs.writeFile(path, 'automatic creat page', function (err) {
+		    fs.writeFile(path, 'automatic creat', function (err) {
 		        if (err){
 		            throw err;
 		        } else {
@@ -126,10 +147,13 @@ exports.init = function(models) {
 		},
 		newPageAction: function() {
 			if (base.post && base.post.page_name) {
+				var url_name = (base.post.url_name?base.post.url_name:helper.Ru2En(base.post.page_name).toLowerCase());
 				var newPage = {
 					'name': base.post.page_name,
+					'eng_name': url_name,
 					'title': base.post.title,
 					'descr': base.post.descr,
+					'body': base.post.body,
 					'show': (base.post.show?true:false)
 				}
 				var menu_id = base.post.menu_id;
@@ -151,10 +175,13 @@ exports.init = function(models) {
 		},
 		edit_pageAction: function() {
 			if (base.post && base.post.page_name && base.req.params.id) {
+				var url_name = (base.post.url_name?base.post.url_name:helper.Ru2En(base.post.page_name).toLowerCase());
 				var data = {
 					'name': base.post.page_name,
+					'eng_name': url_name,
 					'title': base.post.title,
 					'descr': base.post.descr,
+					'body': base.post.body,
 					'show': (base.post.show?true:false)
 				}
 				page_id = base.req.params.id;
@@ -196,8 +223,10 @@ exports.init = function(models) {
 ////////// BEGIN MENU ACTIONS ////////////
 		addMenuItem: function(callback) {
 			if (base.post.item_name) {
+				var url_name = (base.post.url_name?base.post.url_name:helper.Ru2En(base.post.item_name).toLowerCase());
 				newMenu = {
 					name: base.post.item_name,
+					eng_name: url_name,
 					show: (base.post.show?true:false)
 				}
 				models.menus.add(newMenu, function(id){
@@ -209,8 +238,10 @@ exports.init = function(models) {
 		},
 		editMenu: function(callback) {
 			if (base.post.item_name && base.post.id) {
+				var url_name = (base.post.url_name?base.post.url_name:helper.Ru2En(base.post.item_name).toLowerCase());
 				menuItem = {
 					name: base.post.item_name,
+					eng_name: url_name,
 					show: (base.post.show?true:false)
 				}
 				models.menus.edit(base.post.id, menuItem, function(){
@@ -234,8 +265,9 @@ exports.init = function(models) {
 				models.menus.massUpDate(base.post, function(){
 					adminController.pagesAction(true);
 				})
-			}
-			adminController.pagesAction(true);
+			} else {
+				adminController.pagesAction(true);	
+			}			
 		},
 ////////// END MENU ACTIONS ////////////
 

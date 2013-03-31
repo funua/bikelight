@@ -42,6 +42,10 @@
 					    <div class="controls">
 					    	<input type="text" name="item_name" value="<%=item.name%>" placeholder="Имя">
 					    </div>
+					    <label>Имя на анг. для Url</label>
+					    <div class="controls">
+					    	<input type="text" name="url_name" value="<%=item.eng_name%>" placeholder="Имя">
+					    </div>					    
 					    <label class="checkbox">
 					      <input type="checkbox" name="show" <%=(item.show?'checked="checked"':'')%> > Показывать
 					    </label>
@@ -72,6 +76,10 @@
 			    <div class="controls">
 			    	<input type="text" name="item_name" placeholder="Имя">
 			    </div>
+			    <label>Имя на анг. для Url</label>
+			    <div class="controls">
+			    	<input type="text" name="url_name" placeholder="Имя">
+			    </div>			    
 			    <label class="checkbox">
 			      <input type="checkbox" name="show"> Показывать
 			    </label>

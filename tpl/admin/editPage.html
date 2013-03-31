@@ -5,11 +5,15 @@
     		<form id="formPage" method="post">
 				<fieldset>
 					<label>Имя</label>
-					<input type="text" value="<%=page.name%>" name="page_name" placeholder="">				
+					<input type="text" value="<%=page.name%>" name="page_name" placeholder="">
+					<label>Имя страницы на анг. для Url</label>
+					<input type="text" name="url_name" value="<%=page.eng_name%>" placeholder="">
 					<label>Title</label>
 					<input type="text" value="<%=(page.title?page.title:'')%>" class="span10" name="title" placeholder="">
 					<label>Descr</label>
 					<textarea type="text" class="span10" name="descr" placeholder=""><%=(page.descr?page.descr:'')%></textarea>
+					<label>Body</label>
+					<textarea type="text" class="span10" id="code" name="body" placeholder=""><%=(page.body?page.body:'')%></textarea>
 					<label class="checkbox">
 						<input type="checkbox" <%=(page.show?'checked="checked"':'')%> name="show"> Показывать
 					</label>
@@ -33,4 +37,17 @@
 			}			
 		})
 	});
+
+
+      // Define an extended mixed-mode that understands vbscript and
+      // leaves mustache/handlebars embedded templates in html mode
+      var mixedMode = {
+        name: "htmlmixed",
+        scriptTypes: [{matches: /\/x-handlebars-template|\/x-mustache/i,
+                       mode: null},
+                      {matches: /(text|application)\/(x-)?vb(a|script)/i,
+                       mode: "vbscript"}]
+      };
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {mode: mixedMode, tabMode: "indent"});
+
 </script>
