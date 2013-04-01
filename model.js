@@ -1,5 +1,28 @@
 exports.init = function(mongoose, schema){
 	var models = {
+		main_page: {
+			model: mongoose.model('main_page', schema.main_page),
+			getAll: function(callback){
+				this.model.find({}, function(err, res){
+					callback(res[0]);
+				})
+				// this.model({
+				// 	'body': '123',
+				// 	'body_footer': '123',
+				// 	'photos': [],
+				// 	'count_news': 0,
+				// 	'title': '123',
+				// 	'descr': '1231'
+				// }).save(function(e,r){
+				// 	console.log(r);
+				// });
+			},
+			save: function(id, data, callback) {
+				this.model.update({_id:id}, {$set:data}).exec(function(err, req){
+					callback();
+				});
+			}
+		},
 		users: {
 			model: mongoose.model('Users', schema.Users),
 			save: function(){

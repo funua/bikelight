@@ -45,6 +45,7 @@ exports.init = function(models) {
 		},
 		render: function(path, opts){
 			opts['curr_page'] = this.req.originalUrl;
+			if (!opts['main_page']) opts['main_page'] = '';
 			this.addVars(opts, function(){
 				base.res.render(path, this);
 			});
@@ -71,54 +72,20 @@ exports.init = function(models) {
 				});				
 			}
 		},
-		makeDir: function(name, callback){
-			var path = this.req.app.get('views')+'/pages/'+name;
-			fs.mkdir(path, 0755,function(err){
-				if (err) throw err;
-
-				console.log('successfully  creat dir '+path)
-				if (callback) callback(err);
-			})
-		},
-		removeDir: function(name, callback) {
-			var path = this.req.app.get('views')+'/pages/'+name;
-			fs.rmdir(path, function (err) {
-			  if (err) throw err;
-			  console.log('successfully deleted ' + path);
-			  if (callback) callback(err);
-			});
-		},
-		removeFile: function(id, callback){
-			var path = this.req.app.get('views')+'/pages/'+id+'.html';
-			fs.unlink(path, function (err) {
-			    if (err){
-			        throw err;
-			    } else {
-			    console.log('successfully deleted file');
-			    }
-			    if (callback) callback();
-			});
-		},
-		creatFile: function(id, callback) {
-			var path = this.req.app.get('views')+'/pages/'+id+'.html';
-		    fs.writeFile(path, 'automatic creat', function (err) {
-		        if (err){
-		            throw err;
-		        } else {
-		        console.log('successfully created file');
-		        }
-		        if (callback) callback();
-		    });			
-		},
 		_headMenu: function(callback){
 			models.menus.getAllPopulate(callback, true);
+		},
+		_mainPage: function(callback){
+			models.main_page.getAll(callback);
 		}
 	}
 
 	var indexController = {
 		path: '',
 		indexAction: function() {
-			this.render('index');
+			this.render('index', {
+				main_page: 'main_page'
+			});
 		},
 		render: function(name, opts) {
 			if (!opts) opts = {}
@@ -131,7 +98,21 @@ exports.init = function(models) {
 		path: 'admin/',
 		layout: 'admin_layout.html',
 		indexAction: function() {
-			this.render('index');
+			if (base.post && base.post.submit) {
+				var data = {
+					'body': base.post.body,
+					'body_footer': base.post.body_footer,
+					'title': base.post.title,
+					'descr': base.post.descr
+				}
+				models.main_page.save(base.post._id,data, function(){
+					adminController.render('index');
+				});				
+			} else {
+				models.main_page.getAll(function(){
+					adminController.render('index');
+				});
+			}
 		},
 ////////// BEGIN PAGE ACTIONS ////////////		
 		pagesAction: function(view) {
@@ -158,12 +139,9 @@ exports.init = function(models) {
 				}
 				var menu_id = base.post.menu_id;
 				models.pages.add(newPage, function(page_id){
-					base.creatFile(page_id, function(){
-						models.menus.addPageInMenu(menu_id, page_id, function(){
-							adminController.pagesAction(true);
-						});						
-					})
-
+					models.menus.addPageInMenu(menu_id, page_id, function(){
+						adminController.pagesAction(true);
+					});						
 				});
 			} else {
 				var menu = models.menus.getAll(function(data){
@@ -212,10 +190,8 @@ exports.init = function(models) {
 			}
 		},
 		removePage: function(id, callback){
-			base.removeFile(base.req.params.id, function(){
-				models.pages.remove(base.req.params.id, function(){
-					if(callback) callback();
-				});
+			models.pages.remove(base.req.params.id, function(){
+				if(callback) callback();
 			});
 		},
 ////////// END PAGE ACTIONS ////////////		

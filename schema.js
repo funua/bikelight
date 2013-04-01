@@ -23,7 +23,15 @@ exports.init = function(mongoose){
 			'default_page': {type: mongoose.Schema.Types.ObjectId, ref: 'Pages'},
 			'pos': Number,
 			'show': Boolean
-		})
+		}),
+		main_page: new mongoose.Schema({
+			'body': String,
+			'body_footer': String,
+			'photos': [],
+			'count_news': Number,
+			'title': String,
+			'descr': String
+		}),
 	}
 	return schemes;
 }

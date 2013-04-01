@@ -1,5 +1,36 @@
 <div class="row">
     <div class="span12">
-        <h2>Admin page</h2>
+        <div class="well">
+    		<form method="post">
+				<fieldset>
+					<label>Title</label>
+					<input type="text" value="<%=(_mainPage.title?_mainPage.title:'')%>" name="title" placeholder="">
+					<label>Descr</label>
+					<textarea type="text" class="span10" name="descr" placeholder=""><%=(_mainPage.descr?_mainPage.descr:'')%></textarea>
+					<label>Body</label>
+					<textarea type="text" class="span10" id="code" name="body" placeholder=""><%=(_mainPage.body?_mainPage.body:'')%></textarea>
+					<br/>
+					<label>Footer</label>
+					<textarea type="text" class="span10" id="code2" name="body_footer" placeholder=""><%=(_mainPage.body_footer?_mainPage.body_footer:'')%></textarea>
+					<div class="clearfix"></div>
+					<br/>
+					<input type="hidden" value="1" name="submit" />
+					<input type="hidden" value="<%=_mainPage._id%>" name="_id" />
+					<button type="submit" class="btn">Сохранить</button>
+				</fieldset>
+			</form>
+    	</div>
     </div>
 </div>
+
+<script>
+      var mixedMode = {
+        name: "htmlmixed",
+        scriptTypes: [{matches: /\/x-handlebars-template|\/x-mustache/i,
+                       mode: null},
+                      {matches: /(text|application)\/(x-)?vb(a|script)/i,
+                       mode: "vbscript"}]
+      };
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {mode: mixedMode, tabMode: "indent"});
+      var editor2 = CodeMirror.fromTextArea(document.getElementById("code2"), {mode: mixedMode, tabMode: "indent"});
+</script>

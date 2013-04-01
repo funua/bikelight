@@ -24,7 +24,7 @@
     <script src="/js/bootstrap.js"></script>
   </head>
 
-  <body>
+  <body class="<%=main_page%>">
 
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
@@ -58,10 +58,13 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container mainblock">
         <%=body%>
-    </div> <!-- /container -->
-
+        <hr>
+        <footer>
+        <p><%=_mainPage.body_footer%></p>
+      </footer>
+    </div> <!-- /container -->    
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->

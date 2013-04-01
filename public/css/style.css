@@ -1,4 +1,4 @@
-body {
+body.main_page {
 	/*background: url(../img/bg.png);*/
 	background: black;
 }
@@ -26,6 +26,16 @@ body {
 	color: #faee0e;
 }
 
-.container {
+.mainblock {
+	margin-top: 20px;
+}
+
+.main_page .mainblock {
 	color: #DCDCDC;
+	margin-top: 0px;
+}
+
+hr {
+	border-top: 1px solid #333 !important;
+	border-bottom: 0px !important;
 }
