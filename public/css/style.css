@@ -34,6 +34,22 @@ body.main_page {
 	color: #DCDCDC;
 	margin-top: 0px;
 }
+.dropdown-menu {
+	background-color: rgba(0,0,0,.8);
+}
+.dropdown-menu > li > a {
+	color: #eee;
+}
+
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-submenu:hover > a, .dropdown-submenu:focus > a {
+	background-image: none;
+	background-color: rgba(255,255,255,0.1) !important;
+}
+
+
+.navbar .nav > li > .dropdown-menu:after {
+	border-bottom: 6px solid transparent;
+}
 
 hr {
 	border-top: 1px solid #333 !important;
