@@ -51,6 +51,12 @@ body.main_page {
 	border-bottom: 6px solid transparent;
 }
 
+.brand{
+	margin-top: 5px;
+	width: 280px;
+	height: 32px;
+}
+
 hr {
 	border-top: 1px solid #333 !important;
 	border-bottom: 0px !important;
