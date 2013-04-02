@@ -14,7 +14,7 @@ exports.init = function(models) {
 			this.next = next;
 			this.url = this.req._parsedUrl;
 			this.post = req.body;
-			this.doController();
+			this.doController();						
 		},
 		doController: function(){
 			var path = this.url.pathname.split('/');

@@ -12,6 +12,7 @@ var schema = require('./schema').init(mongoose),
 	auth = require('./auth').init(model.users),
 	controller = require('./controller').init(model),
 	app = express();
+var oneYear = 31557600000;	
 
 app.configure(function(){
 	app.engine('html', require('uinexpress').__express) // Используем функцию "template" библиотеки underscore для рендеринга
@@ -26,7 +27,8 @@ app.configure(function(){
 	app.use(express.cookieParser('abez'));
 	app.use(express.session());
 	app.use(app.router);
-	app.use(express.static(__dirname + "/public"));
+	app.use(express.static(__dirname + '/public', { maxAge: oneYear }));
+app.use(express.errorHandler());
 	app.use(express.errorHandler()); // ONLY FOR DEVELOPMENT	
 });
 
